@@ -147,6 +147,25 @@ async function run() {
         orderId: order._id,
       });
     });
+    // get all orders for a buyer by email
+    app.get("/my-orders/:email", async (req, res) => {
+      const email = req.params.email;
+      const result = await ordersCollection
+        .find({
+          buyer: email,
+        })
+        .toArray();
+      res.send(result);
+    });
+    app.get("/manage-orders/:email", async (req, res) => {
+      const email = req.params.email;
+      const result = await ordersCollection
+        .find({
+          "manager.email": email,
+        })
+        .toArray();
+      res.send(result);
+    });
   } finally {
     // client.close();
   }
