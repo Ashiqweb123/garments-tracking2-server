@@ -63,7 +63,7 @@ async function run() {
 
       res.send(products);
     });
-    // gel all products
+    // get all products
     app.get("/products", async (req, res) => {
       const result = await productsCollection.find().toArray();
       res.send(result);
