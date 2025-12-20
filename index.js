@@ -46,6 +46,7 @@ async function run() {
     const db = client.db("garmentsDB");
     const productsCollection = db.collection("products");
     const ordersCollection = db.collection("orders");
+    const usersCollection = db.collection("users");
 
     // save a plant in db
 
@@ -175,6 +176,29 @@ async function run() {
           "manager.email": email,
         })
         .toArray();
+      res.send(result);
+    });
+
+    // save & update all users in db
+    app.post("/user", async (req, res) => {
+      const userData = req.body;
+      userData.created_at = new Date().toISOString();
+      userData.last_loggedIn = new Date().toISOString();
+      const query = { email: userData.email };
+      const alreadyExist = await usersCollection.findOne(query);
+      console.log("user exist:", !!alreadyExist);
+
+      if (alreadyExist) {
+        console.log("updateing user:");
+        const result = await usersCollection.updateOne(query, {
+          $set: {
+            last_loggedIn: new Date().toISOString(),
+          },
+        });
+        return res.send(result);
+      }
+      console.log("saving new user info");
+      const result = await usersCollection.insertOne(userData);
       res.send(result);
     });
   } finally {
