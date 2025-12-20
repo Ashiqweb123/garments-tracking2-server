@@ -128,8 +128,9 @@ async function run() {
           manager: product.manager,
           name: product.name,
           category: product.category,
-          quantity: 1,
+          quantity: product.quantity,
           price: session.amount_total / 100,
+          image: product?.image,
         };
         // console.log(orderInfo);
         const result = await ordersCollection.insertOne(orderInfo);
@@ -157,9 +158,19 @@ async function run() {
         .toArray();
       res.send(result);
     });
+    // manage order by manager
     app.get("/manage-orders/:email", async (req, res) => {
       const email = req.params.email;
       const result = await ordersCollection
+        .find({
+          "manager.email": email,
+        })
+        .toArray();
+      res.send(result);
+    });
+    app.get("/my-inventory/:email", async (req, res) => {
+      const email = req.params.email;
+      const result = await productsCollection
         .find({
           "manager.email": email,
         })
