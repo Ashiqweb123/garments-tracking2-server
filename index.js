@@ -20,7 +20,7 @@ admin.initializeApp({
 // middleware
 app.use(
   cors({
-    origin: [process.env.CLIENT_SITE_URL],
+    origin: [process.env.CLIENT_SITE_URL, "http://localhost:5173"],
     credentials: true,
     optionsSuccessStatus: 200,
   })
@@ -56,8 +56,7 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    // await client.connect();
-    // console.log("✅ MongoDB connected");
+    console.log("✅ MongoDB connected");
 
     const db = client.db("garmentsDB");
     const productsCollection = db.collection("products");
